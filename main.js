@@ -13,7 +13,7 @@ function createWindow() {
     height: 800, // Initial height of the window
     minWidth: 800, // Minimum width
     minHeight: 600, // Minimum height
-    title: "Discord", // Title of the window
+    title: "Chess.com", // Title of the window
     icon: path.join(__dirname, 'icon.ico'), // Path to the application icon
     autoHideMenuBar: true, // Hides the menu bar by default (reappears on Alt key press)
     webPreferences: {
@@ -24,9 +24,9 @@ function createWindow() {
     }
   });
 
-  // Load discord.com/app directly.
-  // This makes the Electron app act as a wrapper for the Discord web app.
-  mainWindow.loadURL('https://discord.com/app');
+  // Load chess.com directly.
+  // This makes the Electron app act as a wrapper for the Chess.com web app.
+  mainWindow.loadURL('https://www.chess.com/');
 
   // Open external links in the default browser, not within the Electron app.
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {

@@ -1,7 +1,7 @@
 {
-      "name": "discord",
+      "name": "chess",
       "version": "1.0.20",
-      "description": "A Electron Powered Discord Client For Older Systems",
+      "description": "An Electron Powered Chess.com Client For Older Systems",
       "main": "main.js",
       "scripts": {
         "start": "electron .",
@@ -10,7 +10,7 @@
       },
       "keywords": [
         "Electron",
-        "Discord",
+        "Chess.com",
         "Wrapper"
       ],
       "author": "Kai (Magic Dippy Egg)",
@@ -20,8 +20,8 @@
         "electron-builder": "^24.0.0"
       },
       "build": {
-        "appId": "com.magicdippyegg.discord",
-        "productName": "Discord",
+        "appId": "com.magicdippyegg.chess",
+        "productName": "Chess.com",
         "copyright": "Copyright © 2025 ${author}",
         "directories": {
           "output": "dist"
@@ -42,7 +42,7 @@
         "nsis": {
           "installerIcon": "icon.ico",
           "uninstallerIcon": "icon.ico",
-          "uninstallDisplayName": "Discord Uninstaller",
+          "uninstallDisplayName": "Chess Uninstaller",
           "license": "LICENSE.md",
           "allowToChangeInstallationDirectory": true,
           "oneClick": false
