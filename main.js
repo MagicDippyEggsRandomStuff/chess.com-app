@@ -1,7 +1,40 @@
-const { app, BrowserWindow, shell } = require('electron');
+const { app, BrowserWindow, shell, session } = require('electron');
 const path = require('path');
 
 let mainWindow; // Declare mainWindow globally to prevent it from being garbage collected
+const AD_URL_PATTERNS = [
+  '*://*.doubleclick.net/*',
+  '*://*.googlesyndication.com/*',
+  '*://*.googleadservices.com/*',
+  '*://*.adsystem.google.com/*',
+  '*://*.adservice.google.com/*',
+  '*://*.adnxs.com/*',
+  '*://*.taboola.com/*',
+  '*://*.outbrain.com/*',
+  '*://*.zedo.com/*',
+  '*://*.rubiconproject.com/*',
+  '*://*.pubmatic.com/*',
+  '*://*.criteo.com/*',
+  '*://*.moatads.com/*',
+  '*://*.amazon-adsystem.com/*',
+  '*://*.scorecardresearch.com/*',
+  '*://*.quantserve.com/*',
+  '*://*.adsafeprotected.com/*',
+  '*://*/ads/*',
+  '*://*/adserver/*',
+];
+const AD_URL_REGEX = AD_URL_PATTERNS.map(
+  (pattern) =>
+    new RegExp(`^${pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*')}$`, 'i'),
+);
+
+function enableAdBlocking() {
+  session.defaultSession.webRequest.onBeforeRequest({ urls: ['*://*/*'] }, (details, callback) => {
+    const shouldBlock = AD_URL_REGEX.some((regex) => regex.test(details.url));
+
+    callback({ cancel: shouldBlock });
+  });
+}
 
 function createWindow() {
   // Log the user data path to the console for debugging login issues
@@ -50,6 +83,7 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  enableAdBlocking();
   createWindow();
 
   app.on('activate', () => {
