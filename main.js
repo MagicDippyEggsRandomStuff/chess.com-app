@@ -1,7 +1,40 @@
-const { app, BrowserWindow, shell } = require('electron');
+const { app, BrowserWindow, shell, session } = require('electron');
 const path = require('path');
 
 let mainWindow; // Declare mainWindow globally to prevent it from being garbage collected
+const AD_URL_PATTERNS = [
+  '*://*.doubleclick.net/*',
+  '*://*.googlesyndication.com/*',
+  '*://*.googleadservices.com/*',
+  '*://*.adsystem.google.com/*',
+  '*://*.adservice.google.com/*',
+  '*://*.adnxs.com/*',
+  '*://*.taboola.com/*',
+  '*://*.outbrain.com/*',
+  '*://*.zedo.com/*',
+  '*://*.rubiconproject.com/*',
+  '*://*.pubmatic.com/*',
+  '*://*.criteo.com/*',
+  '*://*.moatads.com/*',
+  '*://*.amazon-adsystem.com/*',
+  '*://*.scorecardresearch.com/*',
+  '*://*.quantserve.com/*',
+  '*://*.adsafeprotected.com/*',
+  '*://*/ads/*',
+  '*://*/adserver/*',
+];
+const AD_URL_REGEX = AD_URL_PATTERNS.map(
+  (pattern) =>
+    new RegExp(`^${pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*')}$`, 'i'),
+);
+
+function enableAdBlocking() {
+  session.defaultSession.webRequest.onBeforeRequest({ urls: ['*://*/*'] }, (details, callback) => {
+    const shouldBlock = AD_URL_REGEX.some((regex) => regex.test(details.url));
+
+    callback({ cancel: shouldBlock });
+  });
+}
 
 function createWindow() {
   // Log the user data path to the console for debugging login issues
@@ -13,7 +46,7 @@ function createWindow() {
     height: 800, // Initial height of the window
     minWidth: 800, // Minimum width
     minHeight: 600, // Minimum height
-    title: "Discord", // Title of the window
+    title: "Chess.com", // Title of the window
     icon: path.join(__dirname, 'icon.ico'), // Path to the application icon
     autoHideMenuBar: true, // Hides the menu bar by default (reappears on Alt key press)
     webPreferences: {
@@ -24,9 +57,9 @@ function createWindow() {
     }
   });
 
-  // Load discord.com/app directly.
-  // This makes the Electron app act as a wrapper for the Discord web app.
-  mainWindow.loadURL('https://discord.com/app');
+  // Load chess.com directly.
+  // This makes the Electron app act as a wrapper for the Chess.com web app.
+  mainWindow.loadURL('https://www.chess.com/');
 
   // Open external links in the default browser, not within the Electron app.
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -50,6 +83,7 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  enableAdBlocking();
   createWindow();
 
   app.on('activate', () => {
